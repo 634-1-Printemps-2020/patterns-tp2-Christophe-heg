@@ -15,6 +15,8 @@ public class Game {
 
     public Game() {
         history = new HashMap<>();
+        coin = Coin.getInstance();
+        rules = Rules.getInstance();
     }
 
     /**
@@ -23,14 +25,30 @@ public class Game {
      * @param player le nouveau joueur
      */
     public void addPlayer(Player player) {
-      // TODO: Votre code ici
+        List<CoinState> lst = new ArrayList<>();
+        history.put(player, lst);
     }
 
     /**
      * Faire joueur tous les joueurs et stocker chaque partie dans history
      */
     public void play() {
-      // TODO: Votre code ici
+        for (Player p : history.keySet()){
+            jouer(p);
+        }
+    }
+
+    private void jouer(Player p){
+        // 3 tirages minimum pour gagner
+        for (int i = 1; i <= 3; i++){
+            p.play(coin);
+            getSpecificHistory(p).add(coin.getState());
+        }
+
+        while (!rules.checkWin(getSpecificHistory(p))) {
+            p.play(coin);
+            getSpecificHistory(p).add(coin.getState());
+        }
     }
 
     /**
@@ -39,8 +57,26 @@ public class Game {
      * @return Statistics
      */
     public Statistics getStatistics() {
-      // TODO: Votre code ici
-      return null;
+      return getStat();
+    }
+
+    private Statistics getStat(){
+
+        float total = 0;
+        int minCoup = 0;
+        int maxCoup = 0;
+
+        for (List<CoinState> lst :  history.values()){
+            if (minCoup == 0 || lst.size()-1 < minCoup){
+                minCoup = lst.size() -1;
+            }
+            if (lst.size()-1 > maxCoup){
+                maxCoup = lst.size() -1;
+            }
+            total += lst.size()-1;
+
+        }
+        return new Statistics(total / history.size()-1, minCoup, maxCoup, (int)total);
     }
 
     /**
@@ -49,20 +85,25 @@ public class Game {
      * @return Map contenant chaque joueur et la liste des ses lancers
      */
     public Map<Player, List<CoinState>> getHistory() {
-      // TODO: Votre code ici
-      return null;
+     return history;
     }
-
-
+    
     /**
      * Obtenir l'historique d'un joueur spécifique
      *
      * @param player instance du joueur pour lequel on veut avoir l'historique
      * @return la liste des lancers d'un joueur
      */
-    public List<CoinState> getSpecificHistory(Player player) {
-      // TODO: Votre code ici
-      return null;
+    public List<CoinState> getSpecificHistory(Player player)
+    {
+        if (history.get(player) == null){
+            for (Player p : history.keySet()) {
+                if(p.getId() == player.getId()){
+                    return history.get(p);
+                }
+            }
+            return null;
+        }
+        return history.get(player);
     }
-
 }

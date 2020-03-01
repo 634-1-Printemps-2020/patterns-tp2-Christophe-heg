@@ -10,8 +10,14 @@ public class Player {
     this.id = id;
   }
 
+  public int getId(){
+    return this.id;
+  }
+
   public void play(Coin coin) {
     coin.throwCoin();
   }
-
+  public String toString(){
+    return "Player n° " + getId();
+  }
 }

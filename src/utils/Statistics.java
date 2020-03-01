@@ -52,4 +52,8 @@ public class Statistics {
     this.totalNumberMoves = totalNumberMoves;
   }
 
+  public String toString(){
+    return "Il y a eu " + totalNumberMoves + " coups , avec une moyenne de " + averageToWin + " coups. Le plus petit nombre de coups pour gagner est " + fewerMovesToWin + " et le plus grand est " + mostMovesToWin;
+  }
+
 }
